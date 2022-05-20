@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Fade } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -18,6 +18,7 @@ const Post = function () {
   const navigate = useNavigate();
   const [successfulPOST, setSuccessfulPost] = useState(false);
   const [error, setError] = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
   const [values, setValues] = useState({
     name: "",
     alias: "",
@@ -27,23 +28,29 @@ const Post = function () {
     setValues({ ...values, [prop]: event.target.value });
   };
 
+  const { name, alias } = values;
+
   const handleSubmit = async (e) => {
     try {
       e.preventDefault();
-      const res = await fetch("http://localhost:8000/hero/heroes/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          accept: "application/json",
-        },
-        body: JSON.stringify(values),
-      });
+      if (name.trim().length === 0 && alias.trim().length === 0) {
+        setErrorMsg("Input should not be empty!");
+      } else {
+        const res = await fetch("http://localhost:8000/hero/heroes/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            accept: "application/json",
+          },
+          body: JSON.stringify(values),
+        });
 
-      setSuccessfulPost(true);
+        setSuccessfulPost(true);
 
-      const data = await res.json();
+        const data = await res.json();
 
-      console.log(data);
+        console.log(data);
+      }
     } catch (err) {
       console.log(err);
       setError("Request failed!");
@@ -85,6 +92,7 @@ const Post = function () {
                   />
                   <Button type="submit">Submit</Button>
                   {error && <ErrorSubheading>{error}</ErrorSubheading>}
+                  {errorMsg && <ErrorSubheading>{errorMsg}</ErrorSubheading>}
                 </Form>
               </PostFormCard>
             </Fade>

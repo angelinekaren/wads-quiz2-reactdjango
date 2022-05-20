@@ -100,5 +100,5 @@ export const Button = styled.button`
 
 export const ErrorSubheading = styled.p`
   color: red;
-  font-size: 8px;
+  font-size: 15px;
 `;
